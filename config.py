@@ -1,49 +1,43 @@
-# config.py
+import argparse
 
-from argparse import Namespace
-from transformers import AutoTokenizer
+parser = argparse.ArgumentParser()
 
-args = Namespace(
-    # パス設定
-    train_path="SimKGC/data/WN18RR/train.txt.json",
-    valid_path="SimKGC/data/WN18RR/valid.txt.json",
-    test_path="SimKGC/data/WN18RR/test.txt.json",
-    entity_path="SimKGC/data/WN18RR/entities.json",
-    relation_path="SimKGC/data/WN18RR/relations.json",
+# ===== Dataset =====
+parser.add_argument('--task', type=str, default='WN18RR')
+parser.add_argument('--train_path', type=str, default='simkgc/data/WN18RR/train.txt.json')
+parser.add_argument('--valid_path', type=str, default='simkgc/data/WN18RR/valid.txt.json')
+parser.add_argument('--test_path', type=str, default='simkgc/data/WN18RR/test.txt.json')
+parser.add_argument('--use_link_graph', action='store_true')
+parser.add_argument('--is_test', action='store_true')
 
-    # モデル・トークナイザ
-    pretrained_model="bert-base-uncased",
-    tokenizer=AutoTokenizer.from_pretrained("bert-base-uncased"),
+# ===== Model =====
+parser.add_argument('--model_name', type=str, default='bert_rgcn')
+parser.add_argument('--pretrained_model', type=str, default='bert-base-uncased')
+parser.add_argument('--hidden_dim', type=int, default=768)
+parser.add_argument('--rgcn_hidden_dim', type=int, default=768)
+parser.add_argument('--num_relations', type=int, default=18)  # WN18RR = 18 relation types
 
-    # モデル構造設定
-    max_num_tokens=128,
-    pooling="cls",  # または "mean", "max"
-    rgcn_hidden_dim=256,
-    num_relations=11,  # WN18RR では 11個の関係がある
+# ===== Training =====
+parser.add_argument('--batch_size', type=int, default=64)
+parser.add_argument('--epochs', type=int, default=20)
+parser.add_argument('--lr', type=float, default=1e-5)
+parser.add_argument('--weight_decay', type=float, default=0.01)
+parser.add_argument('--grad_clip', type=float, default=1.0)
+parser.add_argument('--warmup_steps', type=int, default=500)
 
-    # 学習設定
-    batch_size=128,
-    epochs=10,
-    lr=2e-5,
-    weight_decay=0.01,
-    warmup=200,
-    grad_clip=1.0,
-    additive_margin=0.02,
-    t=0.05,  # 温度パラメータ
-    finetune_t=True,
-    pre_batch=0,
-    pre_batch_weight=1.0,
-    use_self_negative=True,
+# ===== Tokenization =====
+parser.add_argument('--max_num_tokens', type=int, default=128)
 
-    # その他
-    output_dir="./output",
-    log_steps=50,
-    use_fp16=False,
-    seed=42,
+# ===== Pre-batch / Self-negative settings =====
+parser.add_argument('--pre_batch', type=int, default=0)
+parser.add_argument('--pre_batch_weight', type=float, default=1.0)
+parser.add_argument('--use_self_negative', action='store_true')
+parser.add_argument('--additive_margin', type=float, default=0.0)
+parser.add_argument('--t', type=float, default=0.05)
+parser.add_argument('--finetune_t', action='store_true')
 
-    # 評価・リンクグラフ
-    use_link_graph=False,
-    rerank_n_hop=2,
-    neighbor_weight=0.05,
-    is_test=False
-)
+# ===== Output =====
+parser.add_argument('--output_dir', type=str, default='output/checkpoints')
+parser.add_argument('--log_dir', type=str, default='output/logs')
+
+args = parser.parse_args()
