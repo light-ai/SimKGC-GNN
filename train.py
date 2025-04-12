@@ -84,6 +84,10 @@ def train():
             os.makedirs(args.output_dir, exist_ok=True)
             torch.save(model.state_dict(), os.path.join(args.output_dir, "best_model.pt"))
             logger.info("Best model saved.")
+        
+        # epochごとに最新のモデルを保存
+        torch.save(model.state_dict(), os.path.join(args.output_dir, 'model_last.pt'))
+
 
     logger.info("Training finished.")
 
