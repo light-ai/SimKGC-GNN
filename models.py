@@ -3,6 +3,10 @@ import torch.nn as nn
 from torch_geometric.nn import RGCNConv
 from SimKGC.models import CustomBertModel
 
+def build_model(args, entity_embeddings, edge_index, edge_type):
+    return CustomBertModelWithRGCN(args, entity_embeddings, edge_index, edge_type)
+
+
 class CustomBertModelWithRGCN(CustomBertModel):
     def __init__(self, args, entity_embeddings: torch.Tensor, edge_index: torch.Tensor, edge_type: torch.Tensor):
         super().__init__(args)
