@@ -2,7 +2,7 @@
 
 from collections import defaultdict
 import json
-from SimKGC.config import args
+from config import args
 from SimKGC.logger_config import logger
 
 class AllTripletDict:

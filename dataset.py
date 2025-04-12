@@ -4,7 +4,7 @@ import torch
 from torch.utils.data import Dataset
 from typing import List
 
-from SimKGC.config import args
+from config import args
 from SimKGC.dict_hub import get_entity_dict, get_tokenizer
 from SimKGC.triplet import reverse_triplet
 from SimKGC.triplet_mask import construct_mask, construct_self_negative_mask

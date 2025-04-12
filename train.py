@@ -4,7 +4,7 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from transformers import AdamW, get_linear_schedule_with_warmup
 
-from SimKGC.config import args
+from config import args
 from dataset import TripleDataset, collate
 from models import build_model
 from evaluate import evaluate_model
