@@ -9,6 +9,8 @@ from dataset import TripleDataset, collate
 from models import build_model
 from evaluate import evaluate_model
 from SimKGC.logger_config import logger
+from SimKGC.dict_hub import get_entity_dict
+from link_graph import LinkGraph
 
 def train():
     # ===== Load Data =====
@@ -20,9 +22,16 @@ def train():
                               shuffle=True, collate_fn=collate, num_workers=4)
     valid_loader = DataLoader(valid_dataset, batch_size=args.batch_size,
                               shuffle=False, collate_fn=collate, num_workers=4)
+    
+    entity_dict = get_entity_dict()
+    entity_embeddings = torch.nn.init.xavier_uniform_(torch.empty(len(entity_dict), args.hidden_dim))
 
+    link_graph = LinkGraph(args.train_path)
+    edge_index, edge_type = link_graph.get_edge_index_and_type(entity_dict)
     # ===== Model =====
-    model = build_model(args)
+    # 例: edge_index, edge_type, entity_embeddings を取得済みの場合
+    model = build_model(args, entity_embeddings, edge_index, edge_type)
+
     model = model.cuda() if torch.cuda.is_available() else model
     logger.info("Model loaded")
 
