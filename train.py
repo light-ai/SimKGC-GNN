@@ -88,6 +88,9 @@ def train():
         # epochごとに最新のモデルを保存
         torch.save(model.state_dict(), os.path.join(args.output_dir, 'model_last.pt'))
 
+        if epoch % 10 == 0:
+            torch.save(model.state_dict(), os.path.join(args.output_dir, f'model_epoch_{epoch}.pt'))
+
 
     logger.info("Training finished.")
 
